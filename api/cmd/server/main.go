@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/aochuka/veryfy/api/internal/config"
-	"github.com/aochuka/veryfy/api/internal/handlers"
-	"github.com/aochuka/veryfy/api/internal/middleware"
+	"github.com/odingaval/veryfy/api/internal/config"
+	"github.com/odingaval/veryfy/api/internal/handlers"
+	"github.com/odingaval/veryfy/api/internal/middleware"
 )
 
 func main() {
