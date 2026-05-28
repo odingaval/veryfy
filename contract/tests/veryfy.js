@@ -20,7 +20,12 @@ describe("veryfy", () => {
       issuerKeypair.publicKey,
       2 * anchor.web3.LAMPORTS_PER_SOL
     );
-    await provider.connection.confirmTransaction(signature);
+    const latestBlockHash = await provider.connection.getLatestBlockhash();
+    await provider.connection.confirmTransaction({
+      blockhash: latestBlockHash.blockhash,
+      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+      signature: signature,
+    });
   });
 
   it("Registers an issuer", async () => {
@@ -120,7 +125,12 @@ describe("veryfy", () => {
       maliciousKeypair.publicKey,
       1 * anchor.web3.LAMPORTS_PER_SOL
     );
-    await provider.connection.confirmTransaction(signature);
+    const latestBlockHash = await provider.connection.getLatestBlockhash();
+    await provider.connection.confirmTransaction({
+      blockhash: latestBlockHash.blockhash,
+      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+      signature: signature,
+    });
 
     const [issuerPda] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("issuer"), issuerKeypair.publicKey.toBuffer()],
