@@ -13,6 +13,8 @@ import (
 	"github.com/odingaval/veryfy/api/internal/config"
 	"github.com/odingaval/veryfy/api/internal/handlers"
 	"github.com/odingaval/veryfy/api/internal/middleware"
+	"github.com/odingaval/veryfy/api/internal/repositories"
+	"github.com/odingaval/veryfy/api/internal/services"
 )
 
 func main() {
@@ -24,8 +26,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	repo := repositories.NewMemoryRepository()
+	hashService := services.NewHashService()
+	licenseService := services.NewLicenseService(hashService, repo)
+	issuerService := services.NewIssuerService(repo)
+
 	router := http.NewServeMux()
-	router.Handle("GET /health", handlers.NewHealthHandler(time.Now()))
+	router.Handle("/health", handlers.NewHealthHandler(time.Now()))
+	router.Handle("/issuers/register", handlers.NewRegisterIssuerHandler(issuerService))
+	router.Handle("/licenses/issue", handlers.NewIssueLicenseHandler(licenseService))
+	router.Handle("/licenses/verify", handlers.NewVerifyLicenseHandler(licenseService))
+	router.Handle("/licenses/revoke", handlers.NewRevokeLicenseHandler(licenseService))
 
 	handler := middleware.Recover(logger)(
 		middleware.RequestLogger(logger)(
