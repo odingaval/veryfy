@@ -1,13 +1,17 @@
+#![allow(ambiguous_glob_reexports)]
 use anchor_lang::prelude::*;
 
-mod errors;
-mod state;
-mod instructions;
+pub mod errors;
+pub mod state;
+pub mod events;
+pub mod instructions;
 
-use crate::errors::VeryfyError;
-use crate::instructions::issue_license::{IssueLicense, issue_license as issue_license_handler};
+pub use instructions::*;
 
-declare_id!("YourProgramIdHere");
+
+use crate::instructions::{issue_license as issue_license_handler, revoke_license as revoke_license_handler, register_issuer as register_issuer_handler};
+
+declare_id!("F2NmTxchnwJJTbCLCAkFa3c8RYXE8PL5ToZwoao8jvD3");
 
 #[program]
 pub mod veryfy {
@@ -25,5 +29,19 @@ pub mod veryfy {
         issue_license_handler(ctx, asset_hash, expiry)
     }
 
-    // Future instructions (revoke_license, register_issuer) will be added here.
+    /// Revoke an existing license. Only the issuing authority can call this.
+    pub fn revoke_license(
+        ctx: Context<RevokeLicense>,
+        asset_hash: [u8; 32],
+    ) -> Result<()> {
+        revoke_license_handler(ctx, asset_hash)
+    }
+
+    /// Register a new issuer on‑chain.
+    pub fn register_issuer(
+        ctx: Context<RegisterIssuer>,
+        name: String,
+    ) -> Result<()> {
+        register_issuer_handler(ctx, name)
+    }
 }
