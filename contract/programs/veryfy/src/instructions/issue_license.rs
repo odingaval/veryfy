@@ -3,7 +3,7 @@ use crate::{
     state::{license::{License, LicenseStatus}, issuer::Issuer},
     errors::VeryfyError,
 };
-
+use crate::events::*;
 /// Context for the `issue_license` instruction
 #[derive(Accounts)]
 #[instruction(asset_hash: [u8; 32], expiry: i64)]
@@ -15,7 +15,7 @@ pub struct IssueLicense<'info> {
         init,
         payer = payer,
         space = 8 + License::MAX_SIZE,
-        seeds = [b"license", &asset_hash],
+        seeds = [b"license", asset_hash.as_ref()],
         bump,
     )]
     pub license: Account<'info, License>,
@@ -47,9 +47,10 @@ pub fn issue_license(
     license.issuer = ctx.accounts.issuer.key();
     license.status = LicenseStatus::Active;
     license.expiry = expiry;
-    license.asset_hash = asset_hash;
-    license.bump = *ctx.bumps.get("license").unwrap();
+    license.bump = ctx.bumps.license;
 
+    license.asset_hash = asset_hash;
+    emit!(LicenseIssued { license: ctx.accounts.license.key(), issuer: ctx.accounts.issuer.key(), holder: ctx.accounts.payer.key(), asset_hash, expiry });
     // Update issuer analytics safely
     ctx.accounts.issuer.issued_count = ctx
         .accounts
