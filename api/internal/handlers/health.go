@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/aochuka/veryfy/api/internal/httpjson"
+	"github.com/odingaval/veryfy/api/internal/httpjson"
 )
 
 // HealthHandler serves the health check endpoint.

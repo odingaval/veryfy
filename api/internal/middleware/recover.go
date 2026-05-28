@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/aochuka/veryfy/api/internal/httpjson"
+	"github.com/odingaval/veryfy/api/internal/httpjson"
 )
 
 // Recover converts unexpected panics into JSON 500 responses.
