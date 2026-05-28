@@ -42,7 +42,7 @@ describe("veryfy", () => {
       .registerIssuer(issuerName)
       .accounts({
         issuer: issuerPda,
-        authority: issuerKeypair.publicKey,
+        payer: issuerKeypair.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([issuerKeypair])
@@ -73,7 +73,6 @@ describe("veryfy", () => {
       .accounts({
         license: licensePda,
         issuer: issuerPda,
-        authority: issuerKeypair.publicKey,
         payer: issuerKeypair.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
