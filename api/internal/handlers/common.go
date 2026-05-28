@@ -44,6 +44,8 @@ func writeHandlerError(w http.ResponseWriter, err error) {
 		httpjson.WriteError(w, http.StatusNotFound, "NOT_FOUND", "license not found")
 	case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
 		httpjson.WriteError(w, http.StatusServiceUnavailable, "SERVICE_UNAVAILABLE", "request cancelled or timed out")
+	case errors.Is(err, repositories.ErrSolanaIntegrationPending):
+		httpjson.WriteError(w, http.StatusNotImplemented, "NOT_IMPLEMENTED", "solana integration is pending")
 	case isValidationError(err):
 		httpjson.WriteError(w, http.StatusBadRequest, "INVALID_REQUEST", err.Error())
 	default:
