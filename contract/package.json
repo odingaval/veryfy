@@ -1,0 +1,15 @@
+{
+  "name": "veryfy-contract",
+  "version": "1.0.0",
+  "description": "Veryfy Anchor Smart Contract",
+  "scripts": {
+    "test": "anchor test"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.30.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.3"
+  }
+}
