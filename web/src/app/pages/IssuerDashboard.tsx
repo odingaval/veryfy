@@ -1,16 +1,24 @@
 import { useState } from "react";
+import { useVeryfyApi } from "../../hooks/useVeryfyApi";
+import { toast } from "sonner";
+import { useWallet } from "@solana/wallet-adapter-react";
+
+// Helper to truncate addresses
+const truncateAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+};
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { WalletConnect } from "../components/WalletConnect";
-import { LicenseType } from "../components/LicenseCard";
-import { StatusBadge, LicenseStatus } from "../components/StatusBadge";
-import { QRScanner } from "../components/QRScanner";
-import { ArrowLeft, FileCheck, Loader2, Trash2, QrCode } from "lucide-react";
+import type { LicenseType } from "../components/LicenseCard";
+import { StatusBadge } from "../components/StatusBadge";
+import type { LicenseStatus } from "../components/StatusBadge";
+import { ArrowLeft, FileCheck, Loader2, Trash2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 
 interface IssuerDashboardProps {
   onNavigate: (page: "landing" | "verify") => void;
@@ -26,26 +34,10 @@ interface IssuedLicense {
 }
 
 export function IssuerDashboard({ onNavigate }: IssuerDashboardProps) {
-  const [connected, setConnected] = useState(false);
+  const { connected } = useWallet();
+  const veryfyApi = useVeryfyApi();
   const [loading, setLoading] = useState(false);
-  const [issuedLicenses, setIssuedLicenses] = useState<IssuedLicense[]>([
-    {
-      id: "1",
-      licenseNumber: "KE/MED/12345",
-      holderName: "John Kamau",
-      licenseType: "MEDICAL",
-      status: "VALID",
-      issuedDate: "2024-01-15",
-    },
-    {
-      id: "2",
-      licenseNumber: "KE/LEG/67890",
-      holderName: "Jane Wanjiku",
-      licenseType: "LEGAL",
-      status: "VALID",
-      issuedDate: "2024-02-20",
-    },
-  ]);
+  const [issuedLicenses, setIssuedLicenses] = useState<IssuedLicense[]>([]);
 
   const [formData, setFormData] = useState({
     licenseType: "" as LicenseType | "",
@@ -57,41 +49,65 @@ export function IssuerDashboard({ onNavigate }: IssuerDashboardProps) {
 
   const handleIssueLicense = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!connected) return toast.error("Please connect wallet first");
     setLoading(true);
+    
+    const toastId = toast.loading("Confirming transaction on-chain...");
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const { licenseHash, txSignature } = await veryfyApi.issueLicense({
+        licenseType: formData.licenseType as LicenseType,
+        holderName: formData.holderName,
+        licenseNumber: formData.licenseNumber,
+        holderWallet: formData.holderWallet,
+        expiryDate: formData.expiryDate,
+        issuerWallet: "connected_wallet",
+      });
 
-    // Add to issued licenses
-    const newLicense: IssuedLicense = {
-      id: Date.now().toString(),
-      licenseNumber: formData.licenseNumber,
-      holderName: formData.holderName,
-      licenseType: formData.licenseType as LicenseType,
-      status: "VALID",
-      issuedDate: new Date().toISOString().split("T")[0],
-    };
+      // Add to issued licenses
+      const newLicense: IssuedLicense = {
+        id: licenseHash,
+        licenseNumber: formData.licenseNumber,
+        holderName: formData.holderName,
+        licenseType: formData.licenseType as LicenseType,
+        status: "VALID",
+        issuedDate: new Date().toISOString().split("T")[0],
+      };
 
-    setIssuedLicenses((prev) => [newLicense, ...prev]);
+      setIssuedLicenses((prev) => [newLicense, ...prev]);
 
-    // Reset form
-    setFormData({
-      licenseType: "",
-      holderName: "",
-      licenseNumber: "",
-      holderWallet: "",
-      expiryDate: "",
-    });
+      toast.success(`License issued! Tx: ${truncateAddress(txSignature)}`, { id: toastId });
 
-    setLoading(false);
+      // Reset form
+      setFormData({
+        licenseType: "",
+        holderName: "",
+        licenseNumber: "",
+        holderWallet: "",
+        expiryDate: "",
+      });
+    } catch (err: any) {
+      console.error("Error issuing license:", err);
+      toast.error(err.message || "Failed to issue license. Check your wallet.", { id: toastId });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRevoke = async (id: string) => {
-    setIssuedLicenses((prev) =>
-      prev.map((license) =>
-        license.id === id ? { ...license, status: "REVOKED" as LicenseStatus } : license
-      )
-    );
+    const toastId = toast.loading("Revoking license on-chain...");
+    try {
+      const { txSignature } = await veryfyApi.revokeLicense(id);
+      setIssuedLicenses((prev) =>
+        prev.map((license) =>
+          license.id === id ? { ...license, status: "REVOKED" as LicenseStatus } : license
+        )
+      );
+      toast.success(`License revoked! Tx: ${truncateAddress(txSignature)}`, { id: toastId });
+    } catch (err: any) {
+      console.error("Error revoking license:", err);
+      toast.error(err.message || "Failed to revoke license", { id: toastId });
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -122,10 +138,7 @@ export function IssuerDashboard({ onNavigate }: IssuerDashboardProps) {
               >
                 Verify License
               </Button>
-              <WalletConnect
-                onConnect={() => setConnected(true)}
-                onDisconnect={() => setConnected(false)}
-              />
+              <WalletConnect />
             </div>
           </div>
         </div>

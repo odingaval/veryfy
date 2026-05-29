@@ -1,0 +1,511 @@
+{
+  "address": "F2NmTxchnwJJTbCLCAkFa3c8RYXE8PL5ToZwoao8jvD3",
+  "metadata": {
+    "name": "veryfy",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "issue_license",
+      "docs": [
+        "Issue a new license NFT on‑chain.",
+        "",
+        "* `asset_hash` – 32‑byte hash identifying the off‑chain asset.",
+        "* `expiry` – Unix timestamp; 0 means never expires."
+      ],
+      "discriminator": [
+        5,
+        103,
+        183,
+        220,
+        230,
+        209,
+        57,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "license",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  99,
+                  101,
+                  110,
+                  115,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "asset_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "issuer",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  115,
+                  115,
+                  117,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "issuer.authority",
+                "account": "Issuer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  115,
+                  115,
+                  117,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "issuer.authority",
+                "account": "Issuer"
+              }
+            ]
+          },
+          "relations": [
+            "issuer"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "asset_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "expiry",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "register_issuer",
+      "docs": [
+        "Register a new issuer on‑chain."
+      ],
+      "discriminator": [
+        145,
+        117,
+        52,
+        59,
+        189,
+        27,
+        127,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "issuer",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  115,
+                  115,
+                  117,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "revoke_license",
+      "docs": [
+        "Revoke an existing license. Only the issuing authority can call this."
+      ],
+      "discriminator": [
+        97,
+        10,
+        143,
+        67,
+        35,
+        212,
+        153,
+        8
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The authority that originally issued the license (signer)"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "license",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  105,
+                  99,
+                  101,
+                  110,
+                  115,
+                  101
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "asset_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "issuer",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  115,
+                  115,
+                  117,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "relations": [
+            "license"
+          ]
+        },
+        {
+          "name": "authority_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  115,
+                  115,
+                  117,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "asset_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Issuer",
+      "discriminator": [
+        216,
+        19,
+        83,
+        230,
+        108,
+        53,
+        80,
+        14
+      ]
+    },
+    {
+      "name": "License",
+      "discriminator": [
+        248,
+        152,
+        195,
+        100,
+        185,
+        108,
+        176,
+        231
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "LicenseIssued",
+      "discriminator": [
+        193,
+        166,
+        92,
+        209,
+        232,
+        70,
+        195,
+        168
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnauthorizedIssuer",
+      "msg": "Unauthorized issuer"
+    },
+    {
+      "code": 6001,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6002,
+      "name": "NotImplemented",
+      "msg": "Feature not yet implemented"
+    }
+  ],
+  "types": [
+    {
+      "name": "Issuer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that controls this issuer (owner wallet)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Optional human‑readable name (max ~64 bytes)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "issued_count",
+            "docs": [
+              "Counter of how many licenses this issuer has created"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "License",
+      "docs": [
+        "On‑chain License account"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "holder",
+            "docs": [
+              "The wallet that holds the license NFT"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "issuer",
+            "docs": [
+              "PDA of the issuer that created this license"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current lifecycle status"
+            ],
+            "type": {
+              "defined": {
+                "name": "LicenseStatus"
+              }
+            }
+          },
+          {
+            "name": "expiry",
+            "docs": [
+              "Unix timestamp of expiry (0 = never expires)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "asset_hash",
+            "docs": [
+              "Hash of the off‑chain asset (e.g., file, video)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LicenseIssued",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "license",
+            "type": "pubkey"
+          },
+          {
+            "name": "issuer",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "expiry",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LicenseStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Revoked"
+          },
+          {
+            "name": "Expired"
+          }
+        ]
+      }
+    }
+  ]
+}
