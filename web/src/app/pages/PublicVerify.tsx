@@ -11,16 +11,16 @@ export function PublicVerify() {
   const [searchId, setSearchId] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
-  
+
   const veryfyApi = useVeryfyApi();
 
   const handleSearch = async () => {
     if (!searchId) return;
     setLoading(true);
-    
+
     try {
       const { status, details } = await veryfyApi.verifyLicense({ licenseHash: searchId });
-      
+
       if (!details) {
         setResult({ status: "INVALID", notFound: true });
       } else {
@@ -63,7 +63,7 @@ export function PublicVerify() {
 
       {/* QR Scanner */}
       <div className="w-full max-w-xl mb-8">
-        <QRScanner onScan={handleQRScan} onClose={() => {}} />
+        <QRScanner onScan={handleQRScan} onClose={() => { }} />
       </div>
 
       {/* Manual Search */}
