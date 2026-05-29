@@ -81,9 +81,9 @@ export function useVeryfyApi() {
         licenseHash: bs58.encode(new Uint8Array(assetHash)),
         txSignature: tx
       };
-    } catch (e) {
-      console.error(e);
-      throw new Error("Failed to execute on-chain transaction");
+    } catch (e: any) {
+      console.error("Smart Contract Error:", e);
+      throw new Error(e.message || "Failed to execute on-chain transaction");
     }
   };
 
@@ -119,8 +119,8 @@ export function useVeryfyApi() {
           verificationHash: licensePda.toString()
         } as any
       };
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      console.error("Verification Error:", e);
       return { status: "INVALID", details: null as any };
     }
   };
@@ -141,17 +141,22 @@ export function useVeryfyApi() {
       PROGRAM_ID
     );
 
-    const tx = await program.methods.revokeLicense(Array.from(assetHash))
-      .accounts({
-        authority: wallet.publicKey,
-        license: licensePda,
-        issuer: issuerPda,
-        authorityAccount: issuerPda, // as per the IDL accounts
-        systemProgram: SystemProgram.programId,
-      } as any)
-      .rpc();
+    try {
+      const tx = await program.methods.revokeLicense(Array.from(assetHash))
+        .accounts({
+          authority: wallet.publicKey,
+          license: licensePda,
+          issuer: issuerPda,
+          authorityAccount: issuerPda, // as per the IDL accounts
+          systemProgram: SystemProgram.programId,
+        } as any)
+        .rpc();
 
-    return { txSignature: tx };
+      return { txSignature: tx };
+    } catch (e: any) {
+      console.error("Revoke Error:", e);
+      throw new Error(e.message || "Failed to execute on-chain transaction");
+    }
   };
 
   return { issueLicense, verifyLicense, revokeLicense };
