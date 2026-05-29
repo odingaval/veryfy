@@ -1,1 +1,9 @@
+[program]
+name = "veryfy"
 
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "npx mocha -t 1000000 tests/**/*.js"
