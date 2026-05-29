@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Veryfy | Institutional Verifier Dashboard</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts and Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#cbdbf5",
+                    "surface": "#f8f9ff",
+                    "primary-fixed-dim": "#b9c7e4",
+                    "on-secondary-fixed": "#002113",
+                    "secondary": "#006c49",
+                    "on-surface-variant": "#44474d",
+                    "inverse-primary": "#b9c7e4",
+                    "on-tertiary-container": "#b87500",
+                    "secondary-container": "#6cf8bb",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container": "#e5eeff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-fixed-variant": "#39475f",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "on-background": "#0b1c30",
+                    "surface-container-low": "#eff4ff",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f8f9ff",
+                    "surface-variant": "#d3e4fe",
+                    "tertiary": "#000000",
+                    "primary": "#000000",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#0d1c32",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-surface": "#0b1c30",
+                    "primary-container": "#0d1c32",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "on-primary-container": "#76849f",
+                    "background": "#f8f9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "inverse-surface": "#213145",
+                    "tertiary-container": "#2a1700",
+                    "primary-fixed": "#d6e3ff",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-tint": "#515f78",
+                    "outline-variant": "#c5c6cd",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary-container": "#00714d",
+                    "outline": "#75777e",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#005236"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "md": "16px",
+                    "sm": "12px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "xxl": "48px",
+                    "xs": "4px",
+                    "base": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "code-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "code-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            min-height: max(884px, 100dvh);
+            background-color: #f8f9ff;
+            color: #0b1c30;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface shadow-sm border-b border-outline-variant">
+<div class="flex items-center justify-between px-gutter h-16 max-w-container-max mx-auto">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">Veryfy</h1>
+</div>
+<button class="bg-primary text-on-primary px-md py-xs rounded-lg font-label-md text-label-md hover:bg-on-surface-variant transition-colors duration-200 active:scale-95">
+            Connect Wallet
+        </button>
+</div>
+</header>
+<!-- Side Navigation (Web) -->
+<aside class="hidden md:flex h-full w-64 fixed left-0 top-0 flex-col py-lg px-md gap-sm mt-16 bg-surface-container-low border-r border-outline-variant">
+<div class="mb-lg px-md">
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Institutional Portal</h2>
+</div>
+<nav class="flex flex-col gap-xs">
+<a class="text-on-surface-variant px-md py-sm flex items-center gap-base hover:bg-surface-variant rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-md text-label-md">Explorer</span>
+</a>
+<a class="bg-secondary-container text-on-secondary-container font-bold rounded-full px-md py-sm flex items-center gap-base" href="#">
+<span class="material-symbols-outlined" data-icon="search_check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search_check</span>
+<span class="font-label-md text-label-md">Verify</span>
+</a>
+<a class="text-on-surface-variant px-md py-sm flex items-center gap-base hover:bg-surface-variant rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="add_moderator">add_moderator</span>
+<span class="font-label-md text-label-md">Issue</span>
+</a>
+<a class="text-on-surface-variant px-md py-sm flex items-center gap-base hover:bg-surface-variant rounded-full transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md">Management</span>
+</a>
+<a class="text-on-surface-variant px-md py-sm flex items-center gap-base hover:bg-surface-variant rounded-full transition-all mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-20 pb-24 md:pb-lg px-md md:px-gutter min-h-screen">
+<div class="max-w-4xl mx-auto space-y-lg">
+<!-- Page Header -->
+<div class="space-y-xs">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Verify Credentials</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Instant institutional verification across the global Veryfy blockchain network.</p>
+</div>
+<!-- Bento Grid Search Interface -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Search Form Card -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant p-lg rounded-xl shadow-sm space-y-md">
+<div class="flex items-center gap-base mb-md">
+<span class="material-symbols-outlined text-secondary" data-icon="quick_reference_all">quick_reference_all</span>
+<h3 class="font-headline-sm text-headline-sm">Verification Details</h3>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-md" onsubmit="event.preventDefault();">
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant" for="license_num">License Number</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md outline-none" id="license_num" placeholder="E.g. VF-9928-11" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant" for="holder_name">Holder Name</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md outline-none" id="holder_name" placeholder="Full legal name" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant" for="issuer">Issuer</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md outline-none" id="issuer" placeholder="Organization name" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface-variant" for="license_type">License Type</label>
+<select class="w-full bg-surface border border-outline rounded-lg px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md outline-none appearance-none" id="license_type">
+<option value="medical">Medical</option>
+<option value="legal">Legal</option>
+<option value="driving">Driving</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant" for="expiry">Expiry Date</label>
+<input class="w-full bg-surface border border-outline rounded-lg px-md py-sm focus:ring-2 focus:ring-primary focus:border-primary font-body-md text-body-md outline-none" id="expiry" type="date"/>
+</div>
+<div class="md:col-span-2 pt-md">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-headline-sm text-headline-sm hover:opacity-90 transition-all flex items-center justify-center gap-base active:scale-95">
+<span class="material-symbols-outlined" data-icon="shield_check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield</span>
+                            Verify License
+                        </button>
+</div>
+</form>
+</div>
+<!-- Guidance Sidebar -->
+<div class="md:col-span-4 space-y-md">
+<div class="bg-primary-container p-lg rounded-xl flex flex-col justify-between h-full border border-primary">
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-primary-fixed mb-sm">Why Verify?</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container leading-relaxed">Veryfy uses decentralized identifiers (DIDs) to ensure that every credential checked is authentic, unexpired, and hasn't been tampered with since issuance.</p>
+</div>
+<div class="mt-xl flex items-center gap-sm">
+<div class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="font-label-md text-label-md text-on-primary-fixed">Bank-Grade Security</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Search Result Area (Empty State) -->
+<section class="mt-xxl border-t border-outline-variant pt-xl">
+<h3 class="font-headline-sm text-headline-sm mb-lg flex items-center gap-sm">
+                Search Result
+                <span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-outline">0 Found</span>
+</h3>
+<div class="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-xxl p-xxl flex flex-col items-center text-center space-y-md">
+<div class="bg-white p-xl rounded-full shadow-sm">
+<span class="material-symbols-outlined text-outline text-5xl" data-icon="search_off" style="font-size: 48px;">search_off</span>
+</div>
+<div class="space-y-xs max-w-sm">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">No license searched yet</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Enter the license details above to initiate a blockchain-wide verification scan.</p>
+</div>
+</div>
+</section>
+<!-- Decorative/Informational Area -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md mt-xxl">
+<div class="p-lg bg-surface border border-outline-variant rounded-xl flex flex-col gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="history">history</span>
+<h5 class="font-label-md text-label-md uppercase tracking-wider">Historical Logs</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your institutional history shows 1,240 verified records this month.</p>
+</div>
+<div class="p-lg bg-surface border border-outline-variant rounded-xl flex flex-col gap-sm">
+<span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
+<h5 class="font-label-md text-label-md uppercase tracking-wider">Network Speed</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Current validation latency: 420ms across 48 worldwide nodes.</p>
+</div>
+<div class="p-lg bg-surface border border-outline-variant rounded-xl flex flex-col gap-sm">
+<span class="material-symbols-outlined text-error" data-icon="gavel">gavel</span>
+<h5 class="font-label-md text-label-md uppercase tracking-wider">Compliance</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Full GDPR and CCPA compliance for all institutional verification queries.</p>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t border-outline-variant w-full py-xl">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter gap-md max-w-container-max mx-auto">
+<div class="flex flex-col gap-xs">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary scale-75" data-icon="verified_user">verified_user</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Veryfy</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 Veryfy Protocol. Secure. Immutable. Verified.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Blockchain Explorer</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+<!-- Mobile Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant flex justify-around items-center py-sm z-50">
+<button class="flex flex-col items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-label-md text-[10px]">Explorer</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-primary">
+<span class="material-symbols-outlined" data-icon="search_check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search_check</span>
+<span class="font-label-md text-[10px]">Verify</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="add_moderator">add_moderator</span>
+<span class="font-label-md text-[10px]">Issue</span>
+</button>
+<button class="flex flex-col items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-[10px]">Wallet</span>
+</button>
+</nav>
+<script>
+    // Simple micro-interaction for the verify button
+    const verifyBtn = document.querySelector('form button');
+    if (verifyBtn) {
+        verifyBtn.addEventListener('click', () => {
+            const originalContent = verifyBtn.innerHTML;
+            verifyBtn.innerHTML = `
+                <span class="material-symbols-outlined animate-spin" data-icon="autorenew">autorenew</span>
+                Scanning Ledger...
+            `;
+            setTimeout(() => {
+                verifyBtn.innerHTML = originalContent;
+            }, 2000);
+        });
+    }
+</script>
+</body></html>

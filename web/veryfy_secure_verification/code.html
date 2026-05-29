@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Veryfy | Immutable License Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#cbdbf5",
+                      "surface": "#f8f9ff",
+                      "primary-fixed-dim": "#b9c7e4",
+                      "on-secondary-fixed": "#002113",
+                      "secondary": "#006c49",
+                      "on-surface-variant": "#44474d",
+                      "inverse-primary": "#b9c7e4",
+                      "on-tertiary-container": "#b87500",
+                      "secondary-container": "#6cf8bb",
+                      "surface-container-high": "#dce9ff",
+                      "surface-container": "#e5eeff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-primary-fixed-variant": "#39475f",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "on-background": "#0b1c30",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "surface-variant": "#d3e4fe",
+                      "tertiary": "#000000",
+                      "primary": "#000000",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#0d1c32",
+                      "secondary-fixed-dim": "#4edea3",
+                      "on-surface": "#0b1c30",
+                      "primary-container": "#0d1c32",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-primary-container": "#76849f",
+                      "background": "#f8f9ff",
+                      "surface-container-highest": "#d3e4fe",
+                      "inverse-surface": "#213145",
+                      "tertiary-container": "#2a1700",
+                      "primary-fixed": "#d6e3ff",
+                      "secondary-fixed": "#6ffbbe",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface-tint": "#515f78",
+                      "outline-variant": "#c5c6cd",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-secondary-container": "#00714d",
+                      "outline": "#75777e",
+                      "on-error": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#005236"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "md": "16px",
+                      "sm": "12px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "xxl": "48px",
+                      "xs": "4px",
+                      "base": "8px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "code-md": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "code-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface shadow-sm border-b border-outline-variant">
+<div class="flex items-center justify-between px-gutter h-16 max-w-container-max mx-auto">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary font-bold" data-icon="verified_user">verified_user</span>
+<span class="font-headline-md text-headline-md font-extrabold tracking-tight text-on-surface">Veryfy</span>
+</div>
+<nav class="hidden md:flex items-center gap-xl">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary" href="#">Explorer</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Verify</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Issue</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Settings</a>
+</nav>
+<button class="bg-primary text-on-primary px-lg py-sm rounded-lg font-label-md text-label-md hover:bg-opacity-90 transition-all active:scale-95">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-surface py-xxl md:py-[120px]">
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,_#000_1px,_transparent_1px)] bg-[length:24px_24px]"></div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-2 items-center gap-xxl">
+<div class="z-10">
+<div class="inline-flex items-center gap-base px-sm py-xs bg-secondary-container text-on-secondary-container rounded-full mb-md">
+<span class="material-symbols-outlined text-body-sm" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-label-md text-label-md">Institutional-Grade Infrastructure</span>
+</div>
+<h1 class="font-display-lg text-display-lg md:text-[64px] md:leading-[72px] text-on-surface mb-md">
+                        Immutable License <span class="text-primary font-extrabold">Verification</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-[540px]">
+                        Bridging the gap between rigorous government standards and streamlined blockchain efficiency. Veryfy provides the definitive protocol for tamper-proof professional credentials.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="bg-primary text-on-primary px-xxl py-md rounded-xl font-label-md text-label-md flex items-center justify-center gap-base shadow-lg hover:shadow-xl transition-all active:scale-95">
+                            Start Verifying
+                            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="border-2 border-primary text-primary px-xxl py-md rounded-xl font-label-md text-label-md flex items-center justify-center gap-base hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+                            Institutional Login
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="aspect-square rounded-full border border-outline-variant absolute -top-10 -right-10 w-full opacity-20"></div>
+<div class="relative rounded-xl overflow-hidden shadow-2xl border border-outline-variant">
+<img alt="Secure blockchain interface" class="w-full h-full object-cover" data-alt="A sophisticated digital dashboard showing complex cryptographic verification trees in a professional environment. The image is shot with shallow depth of field, focusing on a high-resolution screen displaying security certificates. The lighting is cold and clinical, with sharp blue and white tones reflecting off glass surfaces. The mood is highly professional, conveying corporate authority and technological precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkS1i-BJyDRJyuk4tzTQ30l0sMztoXgTPAoHpj6ZHFNGj2ycgXHfPJqCKsx3UcnBwGxuAwGGISfmL3sOA66c2Ds8N51klBWEcIxUr1UZbRMQsDufYlinr1OEfdi8eJJK8K0jMIkS9fe88y7d00qa7cv2wXWogECaSci4q_07vuWYqiS8ybnF7RlNZ109sYJ_22St5ofSKqWTxsu1VEQZABZqYP266v0DmmbyX3Pl74G_MBeNq1rxJkwiQvII36HsgGAkG5EBsytFNo"/>
+<div class="absolute bottom-md left-md right-md glass-card p-md border-l-4 border-secondary rounded-lg">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Medical Board License #7742</p>
+<p class="text-[10px] text-secondary font-bold uppercase tracking-widest">Verified on Blockchain</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Process Bento Grid -->
+<section class="py-xxl bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-xxl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-sm">The Verification Lifecycle</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[600px] mx-auto">
+                        Our protocol ensures end-to-end integrity through three distinct stages of cryptographic proof.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Issue Card -->
+<div class="bg-white p-xl rounded-xl border border-outline-variant group hover:shadow-xl transition-all duration-300">
+<div class="w-14 h-14 bg-surface-container-high rounded-lg flex items-center justify-center mb-lg group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]" data-icon="add_moderator">add_moderator</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Issue</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">
+                            Authorities mint verifiable credentials as non-transferable digital assets. Metadata is cryptographically signed and hashed.
+                        </p>
+<div class="h-px bg-outline-variant w-full mb-md"></div>
+<ul class="space-y-sm">
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                Batch Minting Engines
+                            </li>
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                Multi-sig Authorization
+                            </li>
+</ul>
+</div>
+<!-- Verify Card -->
+<div class="bg-white p-xl rounded-xl border border-outline-variant group hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-surface-variant opacity-10 rounded-bl-full"></div>
+<div class="w-14 h-14 bg-surface-container-high rounded-lg flex items-center justify-center mb-lg group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]" data-icon="search_check">search_check</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Verify</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">
+                            Instantly validate license status without third-party reliance. The Veryfy explorer checks the ledger in real-time.
+                        </p>
+<div class="h-px bg-outline-variant w-full mb-md"></div>
+<ul class="space-y-sm">
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                Zero-Knowledge Proofs
+                            </li>
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                0.04s Verification Speed
+                            </li>
+</ul>
+</div>
+<!-- Trust Card -->
+<div class="bg-white p-xl rounded-xl border border-outline-variant group hover:shadow-xl transition-all duration-300">
+<div class="w-14 h-14 bg-surface-container-high rounded-lg flex items-center justify-center mb-lg group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[32px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Trust</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">
+                            A decentralized root of trust ensures that once a license is issued, it cannot be altered by malicious entities.
+                        </p>
+<div class="h-px bg-outline-variant w-full mb-md"></div>
+<ul class="space-y-sm">
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                Immutable Audit Logs
+                            </li>
+<li class="flex items-center gap-base text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-md" data-icon="done">done</span>
+                                Public Ledger Transparency
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust Stats / High Trust Imagery -->
+<section class="py-xxl max-w-container-max mx-auto px-gutter">
+<div class="bg-on-background text-white rounded-xxl p-xl md:p-xxl flex flex-col md:flex-row items-center gap-xxl overflow-hidden relative">
+<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.05)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.05)_50%,rgba(255,255,255,0.05)_75%,transparent_75%,transparent)] bg-[length:64px_64px] opacity-10"></div>
+<div class="md:w-1/2 z-10">
+<h2 class="font-display-lg text-headline-lg md:text-display-lg mb-md">Verified by Authority</h2>
+<p class="font-body-lg text-body-lg text-surface-dim mb-xl">
+                        Trusted by over 45 government regulatory bodies and 1,200 institutions worldwide. Veryfy is the gold standard in immutable professional history.
+                    </p>
+<div class="grid grid-cols-2 gap-lg">
+<div>
+<p class="font-display-lg text-headline-lg text-secondary-fixed">2.4M+</p>
+<p class="font-label-md text-label-md text-surface-dim">Licenses Issued</p>
+</div>
+<div>
+<p class="font-display-lg text-headline-lg text-secondary-fixed">100%</p>
+<p class="font-label-md text-label-md text-surface-dim">Uptime Reliability</p>
+</div>
+</div>
+</div>
+<div class="md:w-1/2 z-10">
+<div class="bg-surface rounded-xl p-lg text-on-surface shadow-2xl">
+<div class="flex items-center justify-between mb-lg">
+<p class="font-headline-sm text-headline-sm font-bold">Transaction Ledger</p>
+<span class="px-sm py-xs bg-secondary-container text-on-secondary-container rounded font-label-md text-[10px] uppercase">Live</span>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-sm bg-surface-container-low rounded border border-outline-variant">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-secondary" data-icon="receipt_long">receipt_long</span>
+<span class="font-code-md text-code-md">0x74...f92a</span>
+</div>
+<span class="text-body-sm text-on-surface-variant italic">Issued: Law License</span>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container-low rounded border border-outline-variant opacity-80">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-secondary" data-icon="receipt_long">receipt_long</span>
+<span class="font-code-md text-code-md">0x12...a8c1</span>
+</div>
+<span class="text-body-sm text-on-surface-variant italic">Verified: MD Permit</span>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container-low rounded border border-outline-variant opacity-60">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-secondary" data-icon="receipt_long">receipt_long</span>
+<span class="font-code-md text-code-md">0xbb...33ef</span>
+</div>
+<span class="text-body-sm text-on-surface-variant italic">Renewed: Engineering</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t border-outline-variant mt-xxl">
+<div class="flex flex-col md:flex-row justify-between items-center px-gutter py-xl gap-md max-w-container-max mx-auto">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary font-bold" data-icon="verified_user">verified_user</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">Veryfy</span>
+</div>
+<div class="flex flex-wrap justify-center gap-xl">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Blockchain Explorer</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                © 2024 Veryfy Protocol. Secure. Immutable. Verified.
+            </p>
+</div>
+</footer>
+<script>
+        // Simple scroll effect for the header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+
+        // Interactive card hover sounds/haptics simulation logic would go here
+        // No heavy JS requested, keeping logic minimal for performance
+    </script>
+</body></html>
