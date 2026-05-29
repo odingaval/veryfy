@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+web/dist/
+contract/target/
+
+# Anchor
+contract/.anchor/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+web/tsc_errors.log
+web/build.log
