@@ -27,3 +27,6 @@ Thumbs.db
 *.log
 web/tsc_errors.log
 web/build.log
+
+# Test ledger
+contract/test-ledger
