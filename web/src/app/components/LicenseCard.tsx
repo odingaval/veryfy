@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { StatusBadge, LicenseStatus } from "./StatusBadge";
+import { StatusBadge } from "./StatusBadge";
+import type { LicenseStatus } from "./StatusBadge";
 import { Separator } from "./ui/separator";
 import { Shield, User, Calendar, Hash, Building2 } from "lucide-react";
 

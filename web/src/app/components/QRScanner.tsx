@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { QrCode, Camera, X } from "lucide-react";
-import { LicenseType } from "./LicenseCard";
+import type { LicenseType } from "./LicenseCard";
 
 interface QRScannerProps {
   onScan: (data: {

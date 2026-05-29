@@ -1,11 +1,20 @@
 import { useState } from "react";
+import { api } from "../../lib/api";
+import { toast } from "sonner";
+
+// Helper to truncate addresses
+const truncateAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+};
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { LicenseCard, License, LicenseType } from "../components/LicenseCard";
-import { LicenseStatus } from "../components/StatusBadge";
+import { LicenseCard } from "../components/LicenseCard";
+import type { License, LicenseType } from "../components/LicenseCard";
+import type { LicenseStatus } from "../components/StatusBadge";
 import { QRScanner } from "../components/QRScanner";
 import { Search, ArrowLeft, Loader2, QrCode, Keyboard } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
@@ -29,25 +38,26 @@ export function VerifierDashboard({ onNavigate }: VerifierDashboardProps) {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const toastId = toast.loading("Verifying license on-chain...");
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await api.verifyLicense({
+        licenseNumber: formData.licenseNumber,
+        holderName: formData.holderName,
+        issuerWallet: formData.issuerWallet,
+        licenseType: formData.licenseType as LicenseType,
+        expiryDate: formData.expiryDate,
+      });
 
-    // Mock verification result
-    const mockLicense: License = {
-      licenseNumber: formData.licenseNumber,
-      holderName: formData.holderName,
-      holderWallet: "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-      licenseType: formData.licenseType as LicenseType,
-      expiryDate: formData.expiryDate,
-      issuerName: "Kenya Medical Practitioners and Dentists Council",
-      status: new Date(formData.expiryDate) > new Date() ? "VALID" : "EXPIRED",
-      issuedAt: "2024-01-15",
-      licenseHash: "0x1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z",
-    };
-
-    setVerifiedLicense(mockLicense);
-    setLoading(false);
+      setVerifiedLicense(response.details);
+      toast.success("License verified successfully", { id: toastId });
+    } catch (err) {
+      console.error("Verification failed:", err);
+      toast.error("Verification failed. Please check the details.", { id: toastId });
+      setVerifiedLicense(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -186,7 +196,7 @@ export function VerifierDashboard({ onNavigate }: VerifierDashboardProps) {
                     <Label htmlFor="issuerWallet">Issuer Wallet</Label>
                     <Input
                       id="issuerWallet"
-                      placeholder="Solana wallet address"
+                      placeholder="e.g. 7xKX...AsU"
                       value={formData.issuerWallet}
                       onChange={(e) =>
                         handleInputChange("issuerWallet", e.target.value)
