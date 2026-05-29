@@ -34,7 +34,7 @@ interface IssuedLicense {
 }
 
 export function IssuerDashboard({ onNavigate }: IssuerDashboardProps) {
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
   const veryfyApi = useVeryfyApi();
   const [loading, setLoading] = useState(false);
   const [issuedLicenses, setIssuedLicenses] = useState<IssuedLicense[]>([]);
@@ -61,7 +61,7 @@ export function IssuerDashboard({ onNavigate }: IssuerDashboardProps) {
         licenseNumber: formData.licenseNumber,
         holderWallet: formData.holderWallet,
         expiryDate: formData.expiryDate,
-        issuerWallet: "connected_wallet",
+        issuerWallet: publicKey?.toString() ?? "",
       });
 
       // Add to issued licenses

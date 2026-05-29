@@ -17,6 +17,11 @@ import (
 	"github.com/odingaval/veryfy/api/internal/services"
 )
 
+type repositorySet interface {
+	repositories.LicenseRepository
+	repositories.IssuerRepository
+}
+
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
@@ -26,7 +31,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	repo := repositories.NewMemoryRepository()
+	var repo repositorySet = repositories.NewMemoryRepository()
+	if cfg.SolanaRPCURL != "" && cfg.ProgramID != "" {
+		solanaRepo, err := repositories.NewSolanaRepository(cfg)
+		if err != nil {
+			logger.Error("failed to initialize solana repository", "error", err)
+			os.Exit(1)
+		}
+		repo = solanaRepo
+		logger.Info("using solana repository", "cluster", cfg.SolanaCluster, "program_id", cfg.ProgramID)
+	} else {
+		logger.Info("using in-memory repository")
+	}
+
 	hashService := services.NewHashService()
 	licenseService := services.NewLicenseService(hashService, repo)
 	issuerService := services.NewIssuerService(repo)

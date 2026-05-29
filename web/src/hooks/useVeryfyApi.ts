@@ -1,21 +1,56 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Program, AnchorProvider, Idl, BN } from '@coral-xyz/anchor';
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SYSVAR_RENT_PUBKEY, SystemProgram } from '@solana/web3.js';
 import bs58 from 'bs58';
 import idl from '../idl/veryfy.json';
 import type { IssueLicenseParams, VerifyLicenseParams } from '../types';
 
 const PROGRAM_ID = new PublicKey(idl.address);
 
-// Helper to hash off-chain metadata (e.g. license info) into a 32-byte array
-function hashLicenseData(params: any): number[] {
-  // Simple deterministic hash mock. In production, use SHA256 of JSON string
-  const str = JSON.stringify(params);
-  const arr = new Array(32).fill(0);
-  for (let i = 0; i < str.length; i++) {
-    arr[i % 32] = (arr[i % 32] + str.charCodeAt(i)) % 256;
+function requireHashFields(params: VerifyLicenseParams): Required<Pick<
+  VerifyLicenseParams,
+  "licenseNumber" | "holderName" | "issuerWallet" | "licenseType" | "expiryDate"
+>> {
+  const requiredFields = ["licenseNumber", "holderName", "issuerWallet", "licenseType", "expiryDate"] as const;
+
+  for (const field of requiredFields) {
+    if (!params[field]) {
+      throw new Error(`${field} is required to derive a license hash`);
+    }
   }
-  return arr;
+
+  return params as Required<Pick<
+    VerifyLicenseParams,
+    "licenseNumber" | "holderName" | "issuerWallet" | "licenseType" | "expiryDate"
+  >>;
+}
+
+function licenseHashInput(params: Required<Pick<
+  VerifyLicenseParams,
+  "licenseNumber" | "holderName" | "issuerWallet" | "licenseType" | "expiryDate"
+>>): string {
+  return `${params.licenseNumber}|${params.holderName}|${params.issuerWallet}|${params.licenseType}|${params.expiryDate}`;
+}
+
+async function sha256Bytes(input: string): Promise<Uint8Array> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+  return new Uint8Array(digest);
+}
+
+async function hashLicenseData(params: VerifyLicenseParams): Promise<Uint8Array> {
+  return sha256Bytes(licenseHashInput(requireHashFields(params)));
+}
+
+function decodeLicenseHash(value: string): Uint8Array {
+  if (/^[0-9a-fA-F]{64}$/.test(value)) {
+    const bytes = new Uint8Array(32);
+    for (let i = 0; i < bytes.length; i += 1) {
+      bytes[i] = Number.parseInt(value.slice(i * 2, i * 2 + 2), 16);
+    }
+    return bytes;
+  }
+
+  return bs58.decode(value);
 }
 
 export function useVeryfyApi() {
@@ -31,11 +66,14 @@ export function useVeryfyApi() {
   const issueLicense = async (params: IssueLicenseParams): Promise<{ licenseHash: string; txSignature: string }> => {
     if (!wallet.publicKey) throw new Error("Wallet not connected");
     const program = getProgram();
+    const issuerWallet = wallet.publicKey.toString();
 
-    const assetHash = hashLicenseData({
-      licenseType: params.licenseType,
-      holderName: params.holderName,
+    const assetHash = await hashLicenseData({
       licenseNumber: params.licenseNumber,
+      holderName: params.holderName,
+      issuerWallet,
+      licenseType: params.licenseType,
+      expiryDate: params.expiryDate,
     });
 
     const expiry = params.expiryDate ? new Date(params.expiryDate).getTime() / 1000 : 0;
@@ -47,7 +85,7 @@ export function useVeryfyApi() {
     );
 
     const [licensePda] = PublicKey.findProgramAddressSync(
-      [new TextEncoder().encode("license"), new Uint8Array(assetHash)],
+      [new TextEncoder().encode("license"), assetHash],
       PROGRAM_ID
     );
 
@@ -74,11 +112,12 @@ export function useVeryfyApi() {
           issuer: issuerPda,
           authority: wallet.publicKey,
           systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
         } as any)
         .rpc();
 
       return {
-        licenseHash: bs58.encode(new Uint8Array(assetHash)),
+        licenseHash: bs58.encode(assetHash),
         txSignature: tx
       };
     } catch (e) {
@@ -92,8 +131,10 @@ export function useVeryfyApi() {
     const provider = new AnchorProvider(connection, {} as any, { commitment: "confirmed" });
     const program = new Program(idl as Idl, provider);
 
-    // Recompute hash
-    const assetHash = bs58.decode(params.licenseHash || params.qrCodeData || "");
+    const assetHash = params.licenseHash || params.qrCodeData
+      ? decodeLicenseHash(params.licenseHash || params.qrCodeData || "")
+      : await hashLicenseData(params);
+
     const [licensePda] = PublicKey.findProgramAddressSync(
       [new TextEncoder().encode("license"), assetHash],
       PROGRAM_ID
@@ -129,7 +170,7 @@ export function useVeryfyApi() {
     if (!wallet.publicKey) throw new Error("Wallet not connected");
     const program = getProgram();
 
-    const assetHash = bs58.decode(licenseHashBase58);
+    const assetHash = decodeLicenseHash(licenseHashBase58);
 
     const [issuerPda] = PublicKey.findProgramAddressSync(
       [new TextEncoder().encode("issuer"), wallet.publicKey.toBytes()],
