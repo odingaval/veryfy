@@ -6,52 +6,51 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { CheckCircle, XCircle, Clock, Loader2 } from "lucide-react";
 import { Badge } from "../components/ui/badge";
+import type { VerifyLicenseParams } from "../../types";
 
 export function PublicVerify() {
-  const [searchId, setSearchId] = useState("");
+  const [licenseInput, setLicenseInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   
   const veryfyApi = useVeryfyApi();
 
-  const handleSearch = async () => {
-    if (!searchId) return;
+  const performVerification = async (params: VerifyLicenseParams) => {
     setLoading(true);
-    
     try {
-      const { status, details } = await veryfyApi.verifyLicense({ licenseHash: searchId });
-      
+      const { status, details } = await veryfyApi.verifyLicense(params);
+      const normalizedStatus = status === "VALID" ? "verified" : status.toLowerCase();
+
       if (!details) {
-        setResult({ status: "INVALID", notFound: true });
-      } else {
-        setResult({
-          status: status.toLowerCase(),
-          organization: "On-Chain Veryfy Network",
-          issuer: details.issuerId,
-          issueDate: details.issuedDate.split("T")[0],
-          expiryDate: details.expiryDate ? details.expiryDate.split("T")[0] : "Never",
-          txHash: details.verificationHash,
-          category: details.licenseType,
-          holder: details.holderName,
-        });
+        setResult({ status: "invalid", notFound: true });
+        return;
       }
+
+      setResult({
+        status: normalizedStatus,
+        organization: "On-Chain Veryfy Network",
+        issuer: details.issuerId,
+        issueDate: details.issuedDate.split("T")[0],
+        expiryDate: details.expiryDate ? details.expiryDate.split("T")[0] : "Never",
+        txHash: details.verificationHash,
+        category: details.licenseType,
+        holder: details.holderName,
+      });
     } catch (e) {
-      setResult({ status: "INVALID", notFound: true });
+      setResult({ status: "invalid", notFound: true });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleQRScan = (data: {
-    licenseNumber: string;
-    holderName: string;
-    issuerWallet: string;
-    licenseType: string;
-    expiryDate: string;
-  }) => {
-    // If the QR contains the hash, use it, else fallback to standard string
-    setSearchId(data.licenseNumber);
-    handleSearch();
+  const handleSearch = async () => {
+    if (!licenseInput) return;
+    await performVerification({ licenseHash: licenseInput });
+  };
+
+  const handleQRScan = async (data: VerifyLicenseParams) => {
+    setLicenseInput("");
+    await performVerification(data);
   };
 
   return (
@@ -69,9 +68,9 @@ export function PublicVerify() {
       {/* Manual Search */}
       <div className="w-full max-w-xl flex gap-2 mb-8">
         <Input
-          placeholder="Enter License ID (e.g. AB12345)"
-          value={searchId}
-          onChange={e => setSearchId(e.target.value)}
+          placeholder="Enter license hash (Base58 or hex)"
+          value={licenseInput}
+          onChange={e => setLicenseInput(e.target.value)}
         />
         <Button onClick={handleSearch} disabled={loading} className="whitespace-nowrap">
           {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Search"}
@@ -97,7 +96,7 @@ export function PublicVerify() {
               </Badge>
             </div>
             <CardDescription className="text-white/70">
-              Verification details for <span className="font-medium text-white">{searchId}</span>
+              Verification details for <span className="font-medium text-white">{licenseInput || "scanned license data"}</span>
             </CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-4 text-white/80 pt-4">

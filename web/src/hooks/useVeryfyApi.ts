@@ -131,9 +131,13 @@ export function useVeryfyApi() {
     const provider = new AnchorProvider(connection, {} as any, { commitment: "confirmed" });
     const program = new Program(idl as Idl, provider);
 
-    const assetHash = params.licenseHash || params.qrCodeData
-      ? decodeLicenseHash(params.licenseHash || params.qrCodeData || "")
-      : await hashLicenseData(params);
+    let assetHash: Uint8Array;
+    if (params.licenseHash || params.qrCodeData) {
+      const encoded = params.licenseHash || params.qrCodeData || "";
+      assetHash = decodeLicenseHash(encoded);
+    } else {
+      assetHash = await hashLicenseData(params);
+    }
 
     const [licensePda] = PublicKey.findProgramAddressSync(
       [new TextEncoder().encode("license"), assetHash],
