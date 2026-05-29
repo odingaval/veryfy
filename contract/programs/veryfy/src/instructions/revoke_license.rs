@@ -1,8 +1,11 @@
-use anchor_lang::prelude::*;
 use crate::{
-    state::{license::{License, LicenseStatus}, issuer::Issuer},
     errors::VeryfyError,
+    state::{
+        issuer::Issuer,
+        license::{License, LicenseStatus},
+    },
 };
+use anchor_lang::prelude::*;
 
 /// Context for revoking a license
 #[derive(Accounts)]
@@ -33,10 +36,7 @@ pub struct RevokeLicense<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn revoke_license(
-    ctx: Context<RevokeLicense>,
-    _asset_hash: [u8; 32],
-) -> Result<()> {
+pub fn revoke_license(ctx: Context<RevokeLicense>, _asset_hash: [u8; 32]) -> Result<()> {
     let license = &mut ctx.accounts.license;
     // Ensure the license was issued by this issuer (has_one constraint already checks)
     license.status = LicenseStatus::Revoked;

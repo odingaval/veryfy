@@ -31,6 +31,11 @@ export function useVeryfyApi() {
   const issueLicense = async (params: IssueLicenseParams): Promise<{ licenseHash: string; txSignature: string }> => {
     if (!wallet.publicKey) throw new Error("Wallet not connected");
     const program = getProgram();
+<<<<<<< Updated upstream
+=======
+    const issuerWallet = wallet.publicKey.toString();
+    const holderWallet = new PublicKey(params.holderWallet);
+>>>>>>> Stashed changes
 
     const assetHash = hashLicenseData({
       licenseType: params.licenseType,
@@ -67,7 +72,7 @@ export function useVeryfyApi() {
       }
 
       // Now issue the license
-      const tx = await program.methods.issueLicense(assetHash, new BN(expiry))
+      const tx = await program.methods.issueLicense(Array.from(assetHash), holderWallet, new BN(expiry))
         .accounts({
           payer: wallet.publicKey,
           license: licensePda,

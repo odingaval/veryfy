@@ -10,6 +10,7 @@ describe("veryfy", () => {
 
   // Test accounts
   const issuerKeypair = anchor.web3.Keypair.generate();
+  const holderKeypair = anchor.web3.Keypair.generate();
   
   // Asset hash mock (32 bytes)
   const assetHash = Array.from({ length: 32 }, () => Math.floor(Math.random() * 256));
@@ -69,12 +70,14 @@ describe("veryfy", () => {
     const expiryTime = new anchor.BN(Date.now() / 1000 + 3600); // Expires in 1 hour
 
     await program.methods
-      .issueLicense(assetHash, expiryTime)
+      .issueLicense(assetHash, holderKeypair.publicKey, expiryTime)
       .accounts({
         license: licensePda,
         issuer: issuerPda,
         payer: issuerKeypair.publicKey,
+        authority: issuerKeypair.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
       })
       .signers([issuerKeypair])
       .rpc();
@@ -82,7 +85,7 @@ describe("veryfy", () => {
     // Fetch the license account and verify
     const licenseAccount = await program.account.license.fetch(licensePda);
     assert.ok(licenseAccount.issuer.equals(issuerPda));
-    assert.ok(licenseAccount.authority.equals(issuerKeypair.publicKey));
+    assert.ok(licenseAccount.holder.equals(holderKeypair.publicKey));
     assert.strictEqual(licenseAccount.assetHash.toString(), assetHash.toString());
     assert.deepEqual(licenseAccount.status, { active: {} }); // Assuming the enum is { active: {} }
     
@@ -107,6 +110,8 @@ describe("veryfy", () => {
         license: licensePda,
         issuer: issuerPda,
         authority: issuerKeypair.publicKey,
+        authorityAccount: issuerPda,
+        systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([issuerKeypair])
       .rpc();
@@ -147,6 +152,8 @@ describe("veryfy", () => {
           license: licensePda,
           issuer: issuerPda,
           authority: maliciousKeypair.publicKey,
+          authorityAccount: issuerPda,
+          systemProgram: anchor.web3.SystemProgram.programId,
         })
         .signers([maliciousKeypair])
         .rpc();

@@ -12,6 +12,7 @@
         "Issue a new license NFT on‑chain.",
         "",
         "* `asset_hash` – 32‑byte hash identifying the off‑chain asset.",
+        "* `holder` – wallet that owns the issued license.",
         "* `expiry` – Unix timestamp; 0 means never expires."
       ],
       "discriminator": [
@@ -80,26 +81,7 @@
         },
         {
           "name": "authority",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  105,
-                  115,
-                  115,
-                  117,
-                  101,
-                  114
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "issuer.authority",
-                "account": "Issuer"
-              }
-            ]
-          },
+          "signer": true,
           "relations": [
             "issuer"
           ]
@@ -122,6 +104,10 @@
               32
             ]
           }
+        },
+        {
+          "name": "holder",
+          "type": "pubkey"
         },
         {
           "name": "expiry",

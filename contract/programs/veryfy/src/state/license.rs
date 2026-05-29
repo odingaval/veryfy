@@ -31,5 +31,5 @@ impl License {
         + 1                           // enum discriminant
         + 8                           // expiry i64
         + 32                          // asset_hash
-        + 1;                          // bump
+        + 1; // bump
 }

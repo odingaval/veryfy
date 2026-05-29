@@ -17,5 +17,5 @@ impl Issuer {
     pub const MAX_SIZE: usize = 32   // authority Pubkey
         + 4 + 64                     // name string (length prefix + up to 64 bytes)
         + 8                          // issued_count u64
-        + 1;                         // bump
+        + 1; // bump
 }

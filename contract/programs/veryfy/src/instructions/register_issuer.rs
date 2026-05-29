@@ -1,8 +1,5 @@
+use crate::state::issuer::Issuer;
 use anchor_lang::prelude::*;
-use crate::{
-    state::issuer::Issuer,
-
-};
 
 /// Context for registering a new issuer
 #[derive(Accounts)]
@@ -23,10 +20,7 @@ pub struct RegisterIssuer<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn register_issuer(
-    ctx: Context<RegisterIssuer>,
-    name: String,
-) -> Result<()> {
+pub fn register_issuer(ctx: Context<RegisterIssuer>, name: String) -> Result<()> {
     let issuer = &mut ctx.accounts.issuer;
     issuer.authority = ctx.accounts.payer.key();
     // Truncate name if too long (max 64 bytes) – Anchor will enforce size later

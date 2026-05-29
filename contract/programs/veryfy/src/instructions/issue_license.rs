@@ -1,12 +1,15 @@
-use anchor_lang::prelude::*;
-use crate::{
-    state::{license::{License, LicenseStatus}, issuer::Issuer},
-    errors::VeryfyError,
-};
 use crate::events::*;
+use crate::{
+    errors::VeryfyError,
+    state::{
+        issuer::Issuer,
+        license::{License, LicenseStatus},
+    },
+};
+use anchor_lang::prelude::*;
 /// Context for the `issue_license` instruction
 #[derive(Accounts)]
-#[instruction(asset_hash: [u8; 32], expiry: i64)]
+#[instruction(asset_hash: [u8; 32], holder: Pubkey, expiry: i64)]
 pub struct IssueLicense<'info> {
     #[account(mut, signer)]
     pub payer: Signer<'info>, // pays rent for the new accounts
@@ -28,9 +31,8 @@ pub struct IssueLicense<'info> {
     )]
     pub issuer: Account<'info, Issuer>,
 
-    /// CHECK: PDA authority for the issuer; not read directly
-    #[account(seeds = [b"issuer", issuer.authority.as_ref()], bump = issuer.bump)]
-    pub authority: UncheckedAccount<'info>,
+    /// Authority wallet for the issuer.
+    pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
@@ -39,18 +41,25 @@ pub struct IssueLicense<'info> {
 pub fn issue_license(
     ctx: Context<IssueLicense>,
     asset_hash: [u8; 32],
+    holder: Pubkey,
     expiry: i64,
 ) -> Result<()> {
     // Populate License account
     let license = &mut ctx.accounts.license;
-    license.holder = ctx.accounts.payer.key();
+    license.holder = holder;
     license.issuer = ctx.accounts.issuer.key();
     license.status = LicenseStatus::Active;
     license.expiry = expiry;
     license.bump = ctx.bumps.license;
 
     license.asset_hash = asset_hash;
-    emit!(LicenseIssued { license: ctx.accounts.license.key(), issuer: ctx.accounts.issuer.key(), holder: ctx.accounts.payer.key(), asset_hash, expiry });
+    emit!(LicenseIssued {
+        license: ctx.accounts.license.key(),
+        issuer: ctx.accounts.issuer.key(),
+        holder,
+        asset_hash,
+        expiry
+    });
     // Update issuer analytics safely
     ctx.accounts.issuer.issued_count = ctx
         .accounts
