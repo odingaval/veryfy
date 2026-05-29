@@ -5,7 +5,7 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 
 export function SolanaProvider({ children }: { children: React.ReactNode }) {
   // Use local test validator for development
-  const endpoint = useMemo(() => "http://127.0.0.1:8899", []);
+  const endpoint = useMemo(() => import.meta.env.VITE_SOLANA_RPC_URL || "http://127.0.0.1:8899", []);
   
   const wallets = useMemo(() => [
     // Add wallets here if you want to support specific ones,
