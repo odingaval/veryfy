@@ -21,14 +21,12 @@ pub struct RevokeLicense<'info> {
     pub license: Account<'info, License>,
 
     #[account(
-        seeds = [b"issuer", authority.key().as_ref()],
+        mut,
+        seeds = [b"issuer", issuer.authority.as_ref()],
         bump = issuer.bump,
+        has_one = authority @ VeryfyError::UnauthorizedIssuer,
     )]
     pub issuer: Account<'info, Issuer>,
-
-    /// CHECK: PDA authority for the issuer – not read directly
-    #[account(seeds = [b"issuer", authority.key().as_ref()], bump = issuer.bump)]
-    pub authority_account: UncheckedAccount<'info>,
 
     pub system_program: Program<'info, System>,
 }

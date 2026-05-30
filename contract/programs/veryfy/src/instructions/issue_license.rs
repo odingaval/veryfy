@@ -22,15 +22,13 @@ pub struct IssueLicense<'info> {
 
     #[account(
         mut,
-        seeds = [b"issuer", issuer.authority.as_ref()],
+        seeds = [b"issuer", authority.key().as_ref()],
         bump = issuer.bump,
         has_one = authority @ VeryfyError::UnauthorizedIssuer,
     )]
     pub issuer: Account<'info, Issuer>,
 
-    /// CHECK: PDA authority for the issuer; not read directly
-    #[account(seeds = [b"issuer", issuer.authority.as_ref()], bump = issuer.bump)]
-    pub authority: UncheckedAccount<'info>,
+    pub authority: Signer<'info>,
 
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,

@@ -1,8 +1,11 @@
+[toolchain]
+solana_version = "3.1.5"
+
 [program]
 name = "veryfy"
 
 [provider]
-cluster = "Localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

@@ -11,7 +11,7 @@ pub use instructions::*;
 
 use crate::instructions::{issue_license as issue_license_handler, revoke_license as revoke_license_handler, register_issuer as register_issuer_handler};
 
-declare_id!("F2NmTxchnwJJTbCLCAkFa3c8RYXE8PL5ToZwoao8jvD3");
+declare_id!("2ePXnx39sHSU5NKpTcRwxhGnND64kHnLZQsy3iavMyPf");
 
 #[program]
 pub mod veryfy {

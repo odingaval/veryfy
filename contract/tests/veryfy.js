@@ -73,6 +73,7 @@ describe("veryfy", () => {
       .accounts({
         license: licensePda,
         issuer: issuerPda,
+        authority: issuerKeypair.publicKey,
         payer: issuerKeypair.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
       })
@@ -82,7 +83,7 @@ describe("veryfy", () => {
     // Fetch the license account and verify
     const licenseAccount = await program.account.license.fetch(licensePda);
     assert.ok(licenseAccount.issuer.equals(issuerPda));
-    assert.ok(licenseAccount.authority.equals(issuerKeypair.publicKey));
+    assert.ok(licenseAccount.holder.equals(issuerKeypair.publicKey));
     assert.strictEqual(licenseAccount.assetHash.toString(), assetHash.toString());
     assert.deepEqual(licenseAccount.status, { active: {} }); // Assuming the enum is { active: {} }
     
